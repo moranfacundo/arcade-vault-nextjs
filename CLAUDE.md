@@ -15,6 +15,10 @@ README says project follows Spec Driven Design (`/spec` and `/spec-impl` skills,
 - `npm run lint` — ESLint (flat config, `eslint.config.mjs`)
 - No test runner configured yet.
 
+## UI work
+
+- Para cualquier tarea de desarrollo de interfaces (páginas, componentes, layouts, estilos, diseño visual, accesibilidad, responsive), usar las skills instaladas globalmente `frontend-design` y `ui-ux-pro-max` vía Skill tool antes de escribir código UI.
+
 ## Stack / gotchas
 
 - Next.js 16.4.5, React 19.3, App Router (`app/`), TypeScript, Tailwind CSS v4 (`@import "tailwindcss"` in `globals.css`, theme via `@theme inline`; no tailwind config file).
