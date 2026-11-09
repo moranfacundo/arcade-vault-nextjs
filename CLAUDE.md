@@ -23,7 +23,6 @@ README says project follows Spec Driven Design (`/spec` and `/spec-impl` skills,
 
 - Para verificar UI contra `references/templates/` (y en checks de aceptación) usar **Playwright MCP** + Chromium instalado: navegar, capturar screenshots en desktop (1280px) y móvil (375px), revisar consola y scroll horizontal (`document.documentElement.scrollWidth <= innerWidth`). Para comparar, abrir `references/templates/Arcade Vault.html` en el navegador.
 - Dev server: `npm run dev` (puerto 3000; usar `-p` si está ocupado). Detenerlo al terminar.
-- Si las herramientas Playwright MCP no aparecen en la sesión, fallback: `playwright-core` con `executablePath` al Chromium de `~/.cache/ms-playwright/chromium-*/chrome-linux64/chrome`. Guardar scripts y capturas en el scratchpad, no en el repo.
 - `next dev` reescribe un bloque en `AGENTS.md`; no es cambio propio.
 
 ## Stack / gotchas
