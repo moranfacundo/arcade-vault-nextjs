@@ -1,6 +1,6 @@
 # SPEC 03 — Página Acerca de + formulario de contacto
 
-**Estado:** Aprobado
+**Estado:** Implementado
 **Depende de:** SPEC 01, SPEC 02
 **Fecha:** 2026-11-09
 **Objetivo:** Construir la página `/acerca` (misión + formulario de contacto) según `references/templates/home-about/about.jsx`, enviando el mensaje por correo con Resend (free tier) y limitando el envío a 1 por hora por usuario.
@@ -52,21 +52,21 @@ Sin esquema persistente. Estructuras:
 9. Verificación con Playwright MCP a 1280 y 375 contra `arcade-vault-standalone.html`; probar envío real con clave de prueba, el segundo envío (bloqueado) y fallo de Resend; `npm run lint` y `npm run build`.
 
 ## Criterios de aceptación
-- [ ] `/acerca` muestra hero, divider y contacto en ese orden, con los textos del template.
-- [ ] Nav muestra "Acerca de" (desktop y móvil), activo solo en `/acerca`.
-- [ ] Enviar con campos vacíos o email inválido no llama a Resend y muestra error de validación (shake en cliente).
-- [ ] Con `RESEND_API_KEY`/`RESEND_TO` válidos, un envío correcto entrega el correo a `RESEND_TO` con `Reply-To` = correo del visitante y muestra la terminal de éxito con el nombre en mayúsculas.
-- [ ] Un segundo envío dentro de 60 min (misma cookie) se rechaza sin llamar a Resend y muestra minutos restantes.
-- [ ] Borrar la cookie y reenviar desde la misma IP dentro de 60 min también se rechaza.
-- [ ] Un envío fallido de Resend muestra error genérico y **no** consume el límite.
-- [ ] `RESEND_API_KEY` no aparece en el bundle cliente ni en el repo; `.env.example` existe y `.env.local` está ignorado.
-- [ ] Botón deshabilitado y texto de estado mientras envía; el resultado se anuncia vía `aria-live`.
-- [ ] Sin errores de consola ni de hidratación en `/acerca`.
-- [ ] Sin scroll horizontal a 375px (`scrollWidth <= innerWidth`).
-- [ ] Capturas a 1280 y 375 equivalentes al template.
-- [ ] Un único `h1`; decorativos con `aria-hidden`; inputs con `label` asociado.
-- [ ] Las demás rutas siguen funcionando.
-- [ ] `npm run lint` y `npm run build` sin errores.
+- [x] `/acerca` muestra hero, divider y contacto en ese orden, con los textos del template.
+- [x] Nav muestra "Acerca de" (desktop y móvil), activo solo en `/acerca`.
+- [x] Enviar con campos vacíos o email inválido no llama a Resend y muestra error de validación (shake en cliente).
+- [x] Con `RESEND_API_KEY`/`RESEND_TO` válidos, un envío correcto entrega el correo a `RESEND_TO` con `Reply-To` = correo del visitante y muestra la terminal de éxito con el nombre en mayúsculas.
+- [x] Un segundo envío dentro de 60 min (misma cookie) se rechaza sin llamar a Resend y muestra minutos restantes.
+- [x] Borrar la cookie y reenviar desde la misma IP dentro de 60 min también se rechaza.
+- [x] Un envío fallido de Resend muestra error genérico y **no** consume el límite.
+- [x] `RESEND_API_KEY` no aparece en el bundle cliente ni en el repo; `.env.example` existe y `.env.local` está ignorado.
+- [x] Botón deshabilitado y texto de estado mientras envía; el resultado se anuncia vía `aria-live`.
+- [x] Sin errores de consola ni de hidratación en `/acerca`.
+- [x] Sin scroll horizontal a 375px (`scrollWidth <= innerWidth`).
+- [x] Capturas a 1280 y 375 equivalentes al template.
+- [x] Un único `h1`; decorativos con `aria-hidden`; inputs con `label` asociado.
+- [x] Las demás rutas siguen funcionando.
+- [x] `npm run lint` y `npm run build` sin errores.
 
 ## Decisiones tomadas y descartadas
 - **Server Action + `resend`** (elegido) vs Route Handler `/api/contacto`: idiomático en Next 16, sin endpoint REST explícito.
