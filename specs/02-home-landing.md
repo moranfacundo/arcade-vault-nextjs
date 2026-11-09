@@ -1,6 +1,6 @@
 # SPEC 02 — Home landing de Arcade Vault
 
-**Estado:** Aprobado
+**Estado:** Implementado
 **Depende de:** SPEC 01
 **Fecha:** 2026-11-09
 **Objetivo:** Reemplazar el contenido visual de `/` por la landing de `references/templates/home-about/` (hero, features, juegos, stats, actividad, precios, CTA final) y mover la Biblioteca a `/biblioteca`.
@@ -50,18 +50,18 @@ Solo mock tipado, sin cambios de esquema externo (`lib/home.ts`):
 7. Revisión visual desktop (1280) y móvil (375) contra `references/templates/home-about/arcade-vault-standalone.html` con Playwright MCP; ajustes; `npm run lint` y `npm run build`.
 
 ## Criterios de aceptación
-- [ ] `/` muestra las 7 secciones en el orden indicado, con textos del template.
-- [ ] `/biblioteca` muestra la Biblioteca con sus 8 juegos y filtros funcionando como antes.
-- [ ] CTA "EXPLORAR JUEGOS", "VER TODOS LOS JUEGOS →" e "INSERTAR MONEDA →" llevan a `/biblioteca`; "CREAR CUENTA" y "EMPEZAR GRATIS →" a `/auth`; "VER SALÓN →" a `/salon`; cada MiniCard a `/juegos/[id]`.
-- [ ] Nav: "Inicio" activo solo en `/`; "Biblioteca" activo en `/biblioteca` y `/juegos/*`; menú móvil refleja lo mismo.
-- [ ] "Volver" desde detalle y "salir" del reproductor llevan a `/biblioteca`; login/invitado redirige a `/`.
-- [ ] Sin errores de consola ni de hidratación en `/` y `/biblioteca`.
-- [ ] Sin scroll horizontal a 375px (`scrollWidth <= innerWidth`) en `/`.
-- [ ] Capturas de `/` a 1280 y 375 equivalentes al template (colores, tipografías, layout, siluetas).
-- [ ] Las secciones con `reveal` aparecen al hacer scroll; con `prefers-reduced-motion` son visibles de inmediato y sin animaciones.
-- [ ] Un único `h1` en `/`; decorativos con `aria-hidden`.
-- [ ] El resto de rutas (`/juegos/[id]`, `/jugar`, `/auth`, `/salon`) siguen funcionando.
-- [ ] `npm run lint` y `npm run build` sin errores.
+- [x] `/` muestra las 7 secciones en el orden indicado, con textos del template.
+- [x] `/biblioteca` muestra la Biblioteca con sus 8 juegos y filtros funcionando como antes.
+- [x] CTA "EXPLORAR JUEGOS", "VER TODOS LOS JUEGOS →" e "INSERTAR MONEDA →" llevan a `/biblioteca`; "CREAR CUENTA" y "EMPEZAR GRATIS →" a `/auth`; "VER SALÓN →" a `/salon`; cada MiniCard a `/juegos/[id]`.
+- [x] Nav: "Inicio" activo solo en `/`; "Biblioteca" activo en `/biblioteca` y `/juegos/*`; menú móvil refleja lo mismo.
+- [x] "Volver" desde detalle y "salir" del reproductor llevan a `/biblioteca`; login/invitado redirige a `/`.
+- [x] Sin errores de consola ni de hidratación en `/` y `/biblioteca`.
+- [x] Sin scroll horizontal a 375px (`scrollWidth <= innerWidth`) en `/`.
+- [x] Capturas de `/` a 1280 y 375 equivalentes al template (colores, tipografías, layout, siluetas).
+- [x] Las secciones con `reveal` aparecen al hacer scroll; con `prefers-reduced-motion` son visibles de inmediato y sin animaciones.
+- [x] Un único `h1` en `/`; decorativos con `aria-hidden`.
+- [x] El resto de rutas (`/juegos/[id]`, `/jugar`, `/auth`, `/salon`) siguen funcionando.
+- [x] `npm run lint` y `npm run build` sin errores.
 
 ## Decisiones tomadas y descartadas
 - **Home en `/`, Biblioteca en `/biblioteca`** (elegido) vs Biblioteca en `/juegos` (colisión con `/juegos/[id]`) vs landing encima de la Biblioteca (página larga, se aleja del template).
