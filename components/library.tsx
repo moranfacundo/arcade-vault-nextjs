@@ -57,7 +57,7 @@ export function Library() {
         ))}
         {filtered.length === 0 && (
           <div className="col-span-full p-20 text-center text-ink-faint">
-            <div className="font-pixel text-sm text-magenta mb-3">NO HAY RESULTADOS</div>
+            <div className="pixel text-[14px] text-magenta mb-3">NO HAY RESULTADOS</div>
             <div>Intenta otra búsqueda o categoría.</div>
           </div>
         )}

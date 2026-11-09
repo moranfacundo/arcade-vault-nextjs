@@ -80,7 +80,7 @@ export function GamePlayer({ game }: { game: Game }) {
           {paused && (
             <div className="crt-content z-5 bg-black/60">
               <div>
-                <div className="font-pixel text-[22px] neon-yellow">EN PAUSA</div>
+                <div className="pixel text-[22px] neon-yellow">EN PAUSA</div>
                 <div className="mt-2.5 font-mono text-[11px] tracking-[0.16em] text-ink-dim">
                   PULSA REANUDAR PARA CONTINUAR
                 </div>
