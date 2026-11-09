@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Arcade Vault: online game platform where players compete for highest score. Early stage — still the Create Next App scaffold (`app/layout.tsx`, `app/page.tsx`, `app/globals.css`). `references/` is empty.
+Arcade Vault: online game platform where players compete for highest score. Early stage — implementando `specs/01-ui-mvp.md` (UI mock, sin juegos reales). `references/templates/` tiene el diseño de referencia (HTML/JSX/CSS) de las 5 pantallas.
 
 README says project follows Spec Driven Design (`/spec` and `/spec-impl` skills, installed via `npx skills@latest add Klerith/fernando-skills`).
 
@@ -18,6 +18,13 @@ README says project follows Spec Driven Design (`/spec` and `/spec-impl` skills,
 ## UI work
 
 - Para cualquier tarea de desarrollo de interfaces (páginas, componentes, layouts, estilos, diseño visual, accesibilidad, responsive), usar las skills instaladas globalmente `frontend-design` y `ui-ux-pro-max` vía Skill tool antes de escribir código UI.
+
+## Verificación visual (UI)
+
+- Para verificar UI contra `references/templates/` (y en checks de aceptación) usar **Playwright MCP** + Chromium instalado: navegar, capturar screenshots en desktop (1280px) y móvil (375px), revisar consola y scroll horizontal (`document.documentElement.scrollWidth <= innerWidth`). Para comparar, abrir `references/templates/Arcade Vault.html` en el navegador.
+- Dev server: `npm run dev` (puerto 3000; usar `-p` si está ocupado). Detenerlo al terminar.
+- Si las herramientas Playwright MCP no aparecen en la sesión, fallback: `playwright-core` con `executablePath` al Chromium de `~/.cache/ms-playwright/chromium-*/chrome-linux64/chrome`. Guardar scripts y capturas en el scratchpad, no en el repo.
+- `next dev` reescribe un bloque en `AGENTS.md`; no es cambio propio.
 
 ## Stack / gotchas
 
