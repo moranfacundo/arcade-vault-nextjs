@@ -1,14 +1,44 @@
 @import "tailwindcss";
 
 @theme inline {
+  /* colores -> bg-*, text-*, border-*, etc. */
   --color-background: var(--bg);
   --color-foreground: var(--ink);
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-bg-3: var(--bg-3);
+  --color-ink: var(--ink);
+  --color-ink-dim: var(--ink-dim);
+  --color-ink-faint: var(--ink-faint);
   --color-cyan: var(--cyan);
   --color-magenta: var(--magenta);
   --color-yellow: var(--yellow);
   --color-green: var(--green);
-  --font-pixel: var(--font-press-start);
-  --font-mono: var(--font-jetbrains);
+  --color-gold: var(--gold);
+  --color-silver: var(--silver);
+  --color-bronze: var(--bronze);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+
+  /* tipografía -> font-pixel, font-mono */
+  --font-pixel: var(--pixel);
+  --font-mono: var(--mono);
+
+  /* glow neón -> shadow-glow-*, text-shadow-glow-* */
+  --shadow-glow-cyan: 0 0 14px rgba(0, 245, 255, 0.55), inset 0 0 8px rgba(0, 245, 255, 0.35);
+  --shadow-glow-magenta: 0 0 14px rgba(255, 0, 110, 0.55), inset 0 0 8px rgba(255, 0, 110, 0.35);
+  --shadow-glow-yellow: 0 0 14px rgba(245, 255, 0, 0.6), inset 0 0 8px rgba(245, 255, 0, 0.35);
+  --shadow-glow-green: 0 0 14px rgba(0, 255, 136, 0.55), inset 0 0 8px rgba(0, 255, 136, 0.35);
+  --text-shadow-glow-cyan: 0 0 6px rgba(0, 245, 255, 0.65), 0 0 16px rgba(0, 245, 255, 0.45);
+  --text-shadow-glow-magenta: 0 0 6px rgba(255, 0, 110, 0.65), 0 0 16px rgba(255, 0, 110, 0.45);
+  --text-shadow-glow-yellow: 0 0 6px rgba(245, 255, 0, 0.7), 0 0 16px rgba(245, 255, 0, 0.4);
+  --text-shadow-glow-green: 0 0 6px rgba(0, 255, 136, 0.6), 0 0 16px rgba(0, 255, 136, 0.35);
+
+  /* animaciones -> animate-* (keyframes definidos más abajo) */
+  --animate-fade-in: fadeIn 240ms ease-out;
+  --animate-slide-in: slideIn 260ms ease-out;
+  --animate-blink: blink 1.2s steps(1, end) infinite;
+  --animate-pulse-glow: pulse 1.6s ease-in-out infinite;
 }
 
 /* ===== ARCADE VAULT — theme ===== */
@@ -187,6 +217,7 @@ a { color: inherit; text-decoration: none; }
   .av-nav { padding: 12px 16px; }
   .av-nav .links { display: none; }
   .av-nav .coin-counter { display: none; }
+  .av-nav .auth-btn { display: none; } /* acceso desde el menú móvil */
   .av-nav .hamburger { display: inline-flex; }
 }
 
@@ -310,7 +341,7 @@ a { color: inherit; text-decoration: none; }
 }
 .av-search:focus-within { border-color: var(--cyan); box-shadow: 0 0 12px rgba(0,245,255,0.35); }
 .av-search input {
-  flex: 1; background: transparent; border: 0; outline: 0;
+  flex: 1; background: transparent; border: 0; outline: 0; padding: 1px 2px; /* preflight de Tailwind resetea el padding UA */
   color: var(--ink); font-size: 13px; letter-spacing: 0.04em;
 }
 .av-search input::placeholder { color: var(--ink-faint); }
@@ -931,7 +962,8 @@ a { color: inherit; text-decoration: none; }
 }
 
 @media (max-width: 720px) {
-  .hall-table .th, .hall-table .tr { grid-template-columns: 50px 1fr 90px 90px; font-size: 12px; padding: 10px 12px; }
+  .hall-table .th, .hall-table .tr { grid-template-columns: 52px minmax(0, 1fr) 84px 76px; font-size: 11px; padding: 10px 12px; gap: 6px; } /* sin desborde a 375px */
+  .hall-table .th { font-size: 8px; letter-spacing: 0; }
   .av-grid { padding: 0 16px; }
   .av-hero { padding: 36px 16px 16px; }
   .av-filters { padding: 0 16px; }
@@ -961,3 +993,18 @@ a { color: inherit; text-decoration: none; }
   clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
 }
 @keyframes spinpix { to { transform: rotate(360deg); } }
+
+/* ===== accesibilidad ===== */
+:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
