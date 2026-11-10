@@ -28,3 +28,12 @@ Retain qualifying friction even if it is later fixed or worked around; record th
 Before the final response, run one reporting pass. If candidates remain, from this file's directory run `npx --no-install next internal agent-feedback-instructions` once without piping or truncating its output. Follow its output or error guidance. If a network sandbox blocks it, retry with network access; if it still returns no output, continue normally.
 
 <!-- END:nextjs-agent-feedback -->
+
+## Supabase
+
+- Paquetes: `@supabase/supabase-js`, `@supabase/ssr`. Proyecto `ddkhfkjsavwfegmgdxcr` (ver `.mcp.json`).
+- Helpers: `lib/supabase/client.ts` (Client Components) y `lib/supabase/server.ts` (Server Components/Actions; `await createClient()`, uno por request). Tipos: `lib/supabase/database.types.ts`.
+- Env públicas: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (en `.env.local`, plantilla en `.env.example`). `SUPABASE_DB` en `.env` es secreto: nunca `NEXT_PUBLIC_`, nunca al cliente, nunca commitear.
+- `cacheComponents`: llamar `createClient()` de `server.ts` fuera de `<Suspense>` en una página rompe el prerender.
+- Tras cambiar el esquema, regenerar tipos con el MCP `generate_typescript_types`.
+- Aún no hay auth, tablas ni `proxy.ts` (specs futuros).
