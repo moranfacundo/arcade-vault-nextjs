@@ -1,9 +1,10 @@
 import Link from "next/link";
+import { Suspense } from "react";
+import { DataFallback } from "@/components/data-fallback";
 import { FeatureIcon } from "@/components/home/feature-icon";
 import { FloatingSilhouettes } from "@/components/home/floating-silhouettes";
-import { MiniCard } from "@/components/home/mini-card";
+import { GamesRail } from "@/components/home/games-rail";
 import { Reveal } from "@/components/home/reveal";
-import { GAMES } from "@/lib/games";
 import {
   ACTIVITY,
   FAQS,
@@ -86,11 +87,9 @@ export default function HomePage() {
       {/* JUEGOS */}
       <Reveal className="home-section">
         <SectionHead kicker="// 02" color="cyan" title="JUEGOS DISPONIBLES AHORA" />
-        <div className="mini-rail">
-          {GAMES.slice(0, 6).map((g) => (
-            <MiniCard key={g.id} game={g} />
-          ))}
-        </div>
+        <Suspense fallback={<DataFallback />}>
+          <GamesRail />
+        </Suspense>
         <div className="mt-6 text-center">
           <Link href="/biblioteca" className="btn lg">
             VER TODOS LOS JUEGOS →
