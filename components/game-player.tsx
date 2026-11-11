@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { insertScore } from "@/lib/db/scores";
-import type { Game } from "@/lib/games";
+import type { GameInfo } from "@/lib/games";
 import { AsteroidsCanvas, type AsteroidsCanvasHandle } from "./games/asteroids-canvas";
 import { useSession } from "./session-provider";
 
-export function GamePlayer({ game }: { game: Game }) {
+export function GamePlayer({ game }: { game: GameInfo }) {
   const { user } = useSession();
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(3);

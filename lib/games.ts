@@ -14,6 +14,9 @@ export interface Game {
   plays: number;
 }
 
+/** Ficha del juego sin estadísticas (cacheable: cambia muy rara vez). */
+export type GameInfo = Omit<Game, "best" | "plays">;
+
 export const CATS: Category[] = ["TODOS", "ARCADE", "PUZZLE", "SHOOTER", "VERSUS"];
 
 /** Formato compacto de partidas jugadas: 950 → "950", 15600 → "15.6K". */

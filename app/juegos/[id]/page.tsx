@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { DataFallback } from "@/components/data-fallback";
-import { getGame, listGameSlugs } from "@/lib/db/games";
+import { getGameInfo, getGameStats, listGameSlugs } from "@/lib/db/games";
 import { getTopScores } from "@/lib/db/scores";
 import { formatPlays } from "@/lib/games";
 
@@ -14,12 +14,34 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps<"/juegos/[id]">): Promise<Metadata> {
   const { id } = await params;
-  const game = await getGame(id);
+  const game = await getGameInfo(id);
   return { title: game ? `${game.title} · Arcade Vault` : "Juego no encontrado" };
 }
 
 // Ids desconocidos deben responder 404 real (sin streaming), así que la ruta puede bloquear.
 export const instant = false;
+
+const BEST_CLASS = "v text-magenta! [text-shadow:0_0_6px_rgba(255,0,110,0.5)]!";
+
+function GameStatCells({ plays, best }: { plays?: number; best?: number }) {
+  return (
+    <>
+      <div>
+        <div className="l">Partidas</div>
+        <div className="v">{plays === undefined ? "—" : formatPlays(plays)}</div>
+      </div>
+      <div>
+        <div className="l">Mejor global</div>
+        <div className={BEST_CLASS}>{best === undefined ? "—" : best.toLocaleString("es-ES")}</div>
+      </div>
+    </>
+  );
+}
+
+async function LiveGameStatCells({ slug }: { slug: string }) {
+  const { best, plays } = await getGameStats(slug);
+  return <GameStatCells plays={plays} best={best} />;
+}
 
 async function TopScores({ slug }: { slug: string }) {
   const scores = await getTopScores(slug, 10);
@@ -52,7 +74,7 @@ async function TopScores({ slug }: { slug: string }) {
 
 export default async function GameDetailPage({ params }: PageProps<"/juegos/[id]">) {
   const { id } = await params;
-  const game = await getGame(id);
+  const game = await getGameInfo(id);
   if (!game) notFound();
 
   return (
@@ -71,16 +93,9 @@ export default async function GameDetailPage({ params }: PageProps<"/juegos/[id]
           <h2 className="neon-cyan">{game.title}</h2>
           <p>{game.long}</p>
           <div className="stat-strip">
-            <div>
-              <div className="l">Partidas</div>
-              <div className="v">{formatPlays(game.plays)}</div>
-            </div>
-            <div>
-              <div className="l">Mejor global</div>
-              <div className="v text-magenta! [text-shadow:0_0_6px_rgba(255,0,110,0.5)]!">
-                {game.best.toLocaleString("es-ES")}
-              </div>
-            </div>
+            <Suspense fallback={<GameStatCells />}>
+              <LiveGameStatCells slug={game.slug} />
+            </Suspense>
             <div>
               <div className="l">Dificultad</div>
               <div
