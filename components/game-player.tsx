@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Game } from "@/lib/games";
+import { AsteroidsCanvas, type AsteroidsCanvasHandle } from "./games/asteroids-canvas";
 import { useSession } from "./session-provider";
 
 const POINTS_PER_LEVEL = 2500;
+// Juegos con motor real: puntuación, vidas y nivel vienen del motor, no de la simulación.
+const REAL_GAMES = new Set(["rocas"]);
 
 export function GamePlayer({ game }: { game: Game }) {
   const { user, saveScore } = useSession();
@@ -15,16 +18,19 @@ export function GamePlayer({ game }: { game: Game }) {
   const [over, setOver] = useState(false);
   const [custom, setCustom] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+  const [realLevel, setRealLevel] = useState(1);
+  const asteroidsRef = useRef<AsteroidsCanvasHandle>(null);
+  const isReal = REAL_GAMES.has(game.id);
 
   // El nombre sigue al usuario de sesión (disponible tras hidratar) salvo que se edite en el modal.
   const name = custom ?? user?.name ?? "INVITADO";
-  const level = 1 + Math.floor(score / POINTS_PER_LEVEL);
+  const level = isReal ? realLevel : 1 + Math.floor(score / POINTS_PER_LEVEL);
 
   useEffect(() => {
-    if (over || paused) return;
+    if (isReal || over || paused) return;
     const t = setInterval(() => setScore((s) => s + Math.floor(10 + Math.random() * 90)), 220);
     return () => clearInterval(t);
-  }, [over, paused]);
+  }, [isReal, over, paused]);
 
   const restart = () => {
     setScore(0);
@@ -32,6 +38,13 @@ export function GamePlayer({ game }: { game: Game }) {
     setPaused(false);
     setOver(false);
     setSaved(false);
+    setRealLevel(1);
+    asteroidsRef.current?.restart();
+  };
+
+  const finish = () => {
+    if (isReal) asteroidsRef.current?.end();
+    else setOver(true);
   };
 
   return (
@@ -59,7 +72,7 @@ export function GamePlayer({ game }: { game: Game }) {
           <button type="button" className="btn yellow" onClick={() => setPaused((p) => !p)}>
             {paused ? "REANUDAR" : "PAUSA"}
           </button>
-          <button type="button" className="btn magenta" onClick={() => setOver(true)}>
+          <button type="button" className="btn magenta" onClick={finish}>
             FIN
           </button>
           <Link href={`/juegos/${game.id}`} className="btn ghost">
@@ -70,13 +83,27 @@ export function GamePlayer({ game }: { game: Game }) {
 
       <div className="crt">
         <div className="crt-screen">
-          <div className="game-arena">
-            <div className="grid-floor"></div>
-            <div className="enemy e1"></div>
-            <div className="enemy e2"></div>
-            <div className="enemy e3"></div>
-            <div className="player-ship"></div>
-          </div>
+          {isReal ? (
+            <AsteroidsCanvas
+              ref={asteroidsRef}
+              paused={paused}
+              onScore={setScore}
+              onLives={setLives}
+              onLevel={setRealLevel}
+              onGameOver={(finalScore) => {
+                setScore(finalScore);
+                setOver(true);
+              }}
+            />
+          ) : (
+            <div className="game-arena">
+              <div className="grid-floor"></div>
+              <div className="enemy e1"></div>
+              <div className="enemy e2"></div>
+              <div className="enemy e3"></div>
+              <div className="player-ship"></div>
+            </div>
+          )}
           {paused && (
             <div className="crt-content z-5 bg-black/60">
               <div>
@@ -93,6 +120,12 @@ export function GamePlayer({ game }: { game: Game }) {
           <span>{game.title} · CRT-83 · 60 HZ</span>
           <span>CARGA · 1MB</span>
         </div>
+        {isReal && (
+          <p className="game-hint">
+            <kbd>←</kbd> <kbd>→</kbd> GIRAR · <kbd>↑</kbd> IMPULSO · <kbd>ESPACIO</kbd> DISPARAR
+            <span className="need-kb">REQUIERE TECLADO</span>
+          </p>
+        )}
       </div>
 
       {over && (
