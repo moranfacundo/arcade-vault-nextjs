@@ -16,6 +16,7 @@
 - Pausa: botón PAUSA detiene `update` (no el render) y retira foco de teclas; el motor ignora el input mientras está en pausa o en game over.
 - Controles solo teclado: `←`/`→` rotar, `↑` propulsar, `Espacio` disparar (como el original). `preventDefault` en flechas/espacio mientras el juego está montado para evitar scroll de página.
 - Aviso en la UI (texto bajo el CRT) de controles; en pantallas táctiles/estrechas, aviso "REQUIERE TECLADO".
+- El indicador del power-up "3x Ns" se dibuja dentro del canvas (esquina superior izquierda, en cian como el original); el resto del HUD original sí se elimina.
 - Quitar el reinicio con Espacio del original (el reinicio lo hace "JUGAR DE NUEVO" de la plataforma).
 - `prefers-reduced-motion`: sin cambio en el juego (es el contenido); se respeta en el resto de la UI como hoy.
 - Textos en español; actualizar `lib/games.ts` solo si el texto de `rocas` debe reflejar mecánicas reales (power-ups, sin OVNIs si el original no los trae).
