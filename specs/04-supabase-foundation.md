@@ -1,6 +1,6 @@
 # SPEC 04 — Cimientos de Supabase
 
-**Estado:** Aprobado
+**Estado:** Implementado
 **Depende de:** SPEC 03 (convención de `.env.example` / env solo servidor)
 **Fecha:** 2026-11-10
 **Objetivo:** Dejar Supabase listo en el proyecto (paquetes, variables de entorno, clientes browser/server, tipos generados y memoria de Claude actualizada) sin cambiar ninguna pantalla ni introducir auth ni tablas.
@@ -42,16 +42,16 @@ Sin esquema persistente nuevo (no se crean tablas). Estructuras:
 8. `npm run lint` y `npm run build` sin errores; revisión de que ninguna pantalla cambió (smoke test de `/`, `/biblioteca`, `/acerca`, `/auth`, `/salon`).
 
 ## Criterios de aceptación
-- [ ] `package.json` incluye `@supabase/supabase-js` y `@supabase/ssr`.
-- [ ] `.env.example` documenta `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`; `.env.local` las define y está ignorado por git.
-- [ ] `lib/supabase/client.ts` y `lib/supabase/server.ts` existen, exportan factorías tipadas con `Database` y compilan.
-- [ ] `lib/supabase/database.types.ts` existe y proviene de `generate_typescript_types`.
-- [ ] Una consulta de prueba con el cliente servidor llega al proyecto sin error de conexión/clave; el script temporal no queda en el repo.
-- [ ] `SUPABASE_DB` y cualquier secreto no aparecen en el bundle cliente ni en el repo.
-- [ ] `CLAUDE.md` documenta stack, variables, helpers y MCP de Supabase; `AGENTS.md` / `README.md` documentan el setup.
-- [ ] Los bloques `BEGIN/END` autogenerados de `AGENTS.md` no se modificaron.
-- [ ] `/`, `/biblioteca`, `/acerca`, `/auth`, `/salon` y `/juegos/[id]` siguen funcionando sin errores de consola.
-- [ ] `npm run lint` y `npm run build` sin errores.
+- [x] `package.json` incluye `@supabase/supabase-js` y `@supabase/ssr`.
+- [x] `.env.example` documenta `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`; `.env.local` las define y está ignorado por git.
+- [x] `lib/supabase/client.ts` y `lib/supabase/server.ts` existen, exportan factorías tipadas con `Database` y compilan.
+- [x] `lib/supabase/database.types.ts` existe y proviene de `generate_typescript_types`.
+- [x] Una consulta de prueba con el cliente servidor llega al proyecto sin error de conexión/clave; el script temporal no queda en el repo.
+- [x] `SUPABASE_DB` y cualquier secreto no aparecen en el bundle cliente ni en el repo.
+- [x] `CLAUDE.md` documenta stack, variables, helpers y MCP de Supabase; `AGENTS.md` / `README.md` documentan el setup.
+- [x] Los bloques `BEGIN/END` autogenerados de `AGENTS.md` no se modificaron.
+- [x] `/`, `/biblioteca`, `/acerca`, `/auth`, `/salon` y `/juegos/[id]` siguen funcionando sin errores de consola.
+- [x] `npm run lint` y `npm run build` sin errores.
 
 ## Decisiones tomadas y descartadas
 - **Solo cimientos** (elegido) vs cimientos + auth vs + puntuaciones: auth y datos se separan en specs propios (decisión del usuario: no entra auth).
