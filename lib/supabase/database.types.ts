@@ -14,10 +14,91 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      games: {
+        Row: {
+          category: string
+          color: string
+          cover: string
+          created_at: string
+          long: string
+          short: string
+          slug: string
+          title: string
+        }
+        Insert: {
+          category: string
+          color: string
+          cover: string
+          created_at?: string
+          long: string
+          short: string
+          slug: string
+          title: string
+        }
+        Update: {
+          category?: string
+          color?: string
+          cover?: string
+          created_at?: string
+          long?: string
+          short?: string
+          slug?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      scores: {
+        Row: {
+          created_at: string
+          game_slug: string
+          id: number
+          is_seed: boolean
+          name: string
+          score: number
+        }
+        Insert: {
+          created_at?: string
+          game_slug: string
+          id?: never
+          is_seed?: boolean
+          name: string
+          score: number
+        }
+        Update: {
+          created_at?: string
+          game_slug?: string
+          id?: never
+          is_seed?: boolean
+          name?: string
+          score?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scores_game_slug_fkey"
+            columns: ["game_slug"]
+            isOneToOne: false
+            referencedRelation: "game_stats"
+            referencedColumns: ["game_slug"]
+          },
+          {
+            foreignKeyName: "scores_game_slug_fkey"
+            columns: ["game_slug"]
+            isOneToOne: false
+            referencedRelation: "games"
+            referencedColumns: ["slug"]
+          },
+        ]
+      }
     }
     Views: {
-      [_ in never]: never
+      game_stats: {
+        Row: {
+          best: number | null
+          game_slug: string | null
+          plays: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
