@@ -1,6 +1,6 @@
 # SPEC 05 — Primer juego jugable: Asteroides (ROCAS)
 
-**Estado:** Aprobado
+**Estado:** Implementado
 **Depende de:** SPEC 01 (UI MVP: `GamePlayer`, ruta `/juegos/[id]/jugar`, `session-provider`)
 **Fecha:** 2026-11-11
 **Objetivo:** Reemplazar la simulación del mock "ROCAS" (`id: "rocas"`) por el juego real Asteroides, portando a TypeScript el canvas de `references/started-games/02-asteroids/` y presentándolo dentro del reproductor de Arcade Vault con su HUD, pausa y guardado de puntuación.
@@ -51,19 +51,19 @@ Sin esquema persistente nuevo. Estructuras:
 8. Verificación con Playwright MCP a 1280 y 375: abrir `/juegos/rocas/jugar`, jugar con teclado, pausa, perder las 3 vidas, guardar puntuación, jugar de nuevo, salir y volver; revisar consola y scroll horizontal. `npm run lint` y `npm run build`.
 
 ## Criterios de aceptación
-- [ ] `/juegos/asteroides/jugar` muestra el canvas de Asteroides dentro del marco CRT; el resto de juegos sigue mostrando el mock.
-- [ ] `←`/`→` rotan, `↑` propulsa, `Espacio` dispara; las teclas no hacen scroll de la página.
-- [ ] Destruir asteroides suma puntos (grande/mediano/pequeño según `POINTS`) y se refleja en el HUD de la plataforma; los asteroides se dividen como en el original.
-- [ ] Chocar resta una vida visible en el HUD; con 0 vidas aparece el modal "FIN DEL JUEGO" con la puntuación final correcta.
-- [ ] Limpiar todos los asteroides sube el nivel en el HUD y genera una nueva oleada.
-- [ ] PAUSA congela el juego y el input; REANUDAR continúa sin saltos (sin `dt` acumulado).
-- [ ] `FIN` abre el modal con la puntuación actual; "GUARDAR PUNTUACIÓN" llama a `saveScore({ game: "rocas", score, name })`; "JUGAR DE NUEVO" reinicia estado, HUD y motor.
-- [ ] Navegar fuera (SALIR / ruta) y volver no deja loops ni listeners duplicados (una sola velocidad de juego tras 3 entradas/salidas; sin errores de consola).
-- [ ] En StrictMode (dev) no hay doble loop ni doble disparo por pulsación.
-- [ ] A 375px no hay scroll horizontal (`scrollWidth <= innerWidth`), el canvas escala sin deformarse y se muestra el aviso "REQUIERE TECLADO".
-- [ ] Sin errores de consola ni de hidratación en `/juegos/rocas`, `/juegos/rocas/jugar` y demás rutas.
-- [ ] `references/started-games/02-asteroids/` queda sin cambios.
-- [ ] `npm run lint` y `npm run build` sin errores.
+- [x] `/juegos/asteroides/jugar` muestra el canvas de Asteroides dentro del marco CRT; el resto de juegos sigue mostrando el mock.
+- [x] `←`/`→` rotan, `↑` propulsa, `Espacio` dispara; las teclas no hacen scroll de la página.
+- [x] Destruir asteroides suma puntos (grande/mediano/pequeño según `POINTS`) y se refleja en el HUD de la plataforma; los asteroides se dividen como en el original.
+- [x] Chocar resta una vida visible en el HUD; con 0 vidas aparece el modal "FIN DEL JUEGO" con la puntuación final correcta.
+- [x] Limpiar todos los asteroides sube el nivel en el HUD y genera una nueva oleada.
+- [x] PAUSA congela el juego y el input; REANUDAR continúa sin saltos (sin `dt` acumulado).
+- [x] `FIN` abre el modal con la puntuación actual; "GUARDAR PUNTUACIÓN" llama a `saveScore({ game: "rocas", score, name })`; "JUGAR DE NUEVO" reinicia estado, HUD y motor.
+- [x] Navegar fuera (SALIR / ruta) y volver no deja loops ni listeners duplicados (una sola velocidad de juego tras 3 entradas/salidas; sin errores de consola).
+- [x] En StrictMode (dev) no hay doble loop ni doble disparo por pulsación.
+- [x] A 375px no hay scroll horizontal (`scrollWidth <= innerWidth`), el canvas escala sin deformarse y se muestra el aviso "REQUIERE TECLADO".
+- [x] Sin errores de consola ni de hidratación en `/juegos/rocas`, `/juegos/rocas/jugar` y demás rutas.
+- [x] `references/started-games/02-asteroids/` queda sin cambios.
+- [x] `npm run lint` y `npm run build` sin errores.
 
 ## Decisiones tomadas y descartadas
 - **Reemplazar el mock `rocas`** (elegido) vs añadir `asteroides` como 9º juego: evita duplicados y reutiliza id, portada y ruta existentes.
