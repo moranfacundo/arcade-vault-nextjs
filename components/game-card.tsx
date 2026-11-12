@@ -29,7 +29,7 @@ export function GameCard({ game }: { game: Game }) {
   return (
     <Link
       ref={ref}
-      href={`/juegos/${game.id}`}
+      href={`/juegos/${game.slug}`}
       className="card block"
       onMouseMove={onMove}
       onMouseLeave={onLeave}
@@ -37,7 +37,7 @@ export function GameCard({ game }: { game: Game }) {
     >
       <div className="cover">
         <div className={"cover-bg " + game.cover}></div>
-        <div className="label">{game.cat}</div>
+        <div className="label">{game.category}</div>
       </div>
       <div className="meta">
         <div className="title">{game.title}</div>

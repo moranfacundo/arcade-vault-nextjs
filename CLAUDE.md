@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Arcade Vault: online game platform where players compete for highest score. Early stage — implementando `specs/01-ui-mvp.md` (UI mock, sin juegos reales). `references/templates/` tiene el diseño de referencia (HTML/JSX/CSS) de las 5 pantallas.
+Arcade Vault: online game platform where players compete for highest score. Early stage — UI de `specs/01-ui-mvp.md` con un único juego real (Asteroides) y catálogo/ranking en Supabase. `references/templates/` tiene el diseño de referencia (HTML/JSX/CSS) de las 5 pantallas.
 
 README says project follows Spec Driven Design (`/spec` and `/spec-impl` skills, installed via `npx skills@latest add Klerith/fernando-skills`).
 
@@ -38,5 +38,9 @@ README says project follows Spec Driven Design (`/spec` and `/spec-impl` skills,
 - Helpers: `lib/supabase/client.ts` (browser) y `lib/supabase/server.ts` (`await createClient()`, uno por request, `cookies()` dentro de la factoría). Tipos generados en `lib/supabase/database.types.ts`; regenerar con MCP `generate_typescript_types` tras cambiar el esquema.
 - Env: `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (publishable key, no anon legacy) en `.env.local`; plantilla en `.env.example`. `SUPABASE_DB` (en `.env`) es secreto: nunca exponer ni commitear.
 - Con `cacheComponents`, `createClient()` de `server.ts` fuera de `<Suspense>` en una página rompe el prerender.
-- Estado: solo cimientos (SPEC 04). Sin auth, tablas ni `proxy.ts`; `session-provider.tsx` sigue en localStorage.
+- Estado (SPEC 06): tablas `games` (solo `asteroides`) y `scores` con RLS; vista `game_stats` (`best`, `plays` derivados, `security_invoker`). Sin auth ni `proxy.ts`; `session-provider.tsx` solo guarda el usuario en localStorage.
+- RLS: `games` y `scores` con `select` público; `insert` en `scores` para `anon`/`authenticated` solo con `is_seed = false`; sin update/delete (además los `GRANT` de `anon`/`authenticated` están recortados a `select`/`insert`: Supabase concede ALL por defecto en tablas nuevas, así que tras crear tablas hay que hacer `revoke all` y re-otorgar lo mínimo). `CHECK`: `name` 1-16 chars, `score` 0..9 999 999. Ranking = Top N de todas las partidas.
+- Capa de datos `lib/db/`: `client.ts` (`createPublicClient`, supabase-js sin cookies, para lecturas y `generateStaticParams`), `games.ts` (`listGames`, `getGame`, `listGameSlugs`), `scores.ts` (`getTopScores`, `insertScore` desde el navegador). El catálogo vive en BD; `lib/games.ts` solo tiene tipos, `CATS` y `formatPlays`.
+- Lecturas a BD en páginas: siempre dentro de `<Suspense>` (con `DataFallback`) por `cacheComponents`; si cambias el esquema, regenera tipos.
+- Añadir un juego = fila en `games` (slug, cover `cover-<slug>` en `globals.css`) + motor/canvas propio; hoy `GamePlayer` solo monta `AsteroidsCanvas`.
 - Antes de cambiar el esquema, inspeccionar con MCP `list_tables`; usar `apply_migration` para DDL y `get_advisors` para revisar seguridad/RLS.

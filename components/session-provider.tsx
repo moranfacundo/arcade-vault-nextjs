@@ -8,7 +8,6 @@ import {
   useSyncExternalStore,
   type ReactNode,
 } from "react";
-import type { StoredScore } from "@/lib/scores";
 
 export interface SessionUser {
   name: string;
@@ -19,11 +18,9 @@ interface SessionContextValue {
   user: SessionUser | null;
   login: (user: SessionUser | null) => void;
   signOut: () => void;
-  saveScore: (entry: Omit<StoredScore, "at">) => void;
 }
 
 const USER_KEY = "av_user";
-const SCORES_KEY = "av_scores";
 const CHANGE_EVENT = "av:session-change";
 
 function readStorage(key: string): string | null {
@@ -77,19 +74,9 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   const signOut = useCallback(() => writeStorage(USER_KEY, null), []);
 
-  const saveScore = useCallback((entry: Omit<StoredScore, "at">) => {
-    let all: StoredScore[] = [];
-    try {
-      const parsed = JSON.parse(readStorage(SCORES_KEY) || "[]");
-      if (Array.isArray(parsed)) all = parsed;
-    } catch {}
-    all.push({ ...entry, at: Date.now() });
-    writeStorage(SCORES_KEY, JSON.stringify(all));
-  }, []);
-
   const value = useMemo(
-    () => ({ user, login, signOut, saveScore }),
-    [user, login, signOut, saveScore],
+    () => ({ user, login, signOut }),
+    [user, login, signOut],
   );
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;

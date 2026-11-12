@@ -60,7 +60,7 @@ export function AsteroidsCanvas({ paused, ref, onScore, onLives, onLevel, onGame
       width={800}
       height={600}
       role="img"
-      aria-label="Pantalla del juego Rocas"
+      aria-label="Pantalla del juego Asteroides"
     />
   );
 }
