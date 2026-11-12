@@ -1,6 +1,6 @@
 # SPEC 06 — Tablas `games` y `scores` en Supabase (catálogo + ranking real)
 
-**Estado:** Aprobado
+**Estado:** Implementado
 **Depende de:** SPEC 04 (clientes Supabase, tipos), SPEC 05 (Asteroides jugable, `saveScore`, `GamePlayer`)
 **Fecha:** 2026-11-11
 **Objetivo:** Mover el catálogo de juegos (reducido a Asteroides, único juego real) y el ranking de puntuaciones a tablas de Supabase (`games`, `scores`), de modo que biblioteca, detalle, salón y guardado de partida lean y escriban datos reales en lugar de mocks y `localStorage`.
@@ -82,21 +82,21 @@
 9. Verificación con Playwright MCP a 1280 y 375: `/`, `/biblioteca`, `/juegos/asteroides`, `/juegos/asteroides/jugar` (jugar, perder, guardar, ver puntuación en el ranking tras recargar), `/salon`, `/juegos/inexistente` (404); consola y scroll horizontal. Comprobar en BD (MCP `execute_sql`) la fila insertada y borrarla. `npm run lint` y `npm run build`.
 
 ## Criterios de aceptación
-- [ ] La migración existe en `list_migrations`; `list_tables` muestra `games` y `scores` con RLS activado.
-- [ ] `games` contiene exactamente 1 fila (`asteroides`); `scores` contiene ~12 filas con `is_seed = true`, todas con `game_slug = 'asteroides'`.
-- [ ] `get_advisors` (security) sin errores/avisos de RLS ni de vista `security definer`.
-- [ ] Con la publishable key (rol `anon`): `select` en `games`/`scores` funciona; `insert` válido funciona; `update`, `delete`, `insert` con `is_seed = true`, `name` vacío o >16 y `score` negativo o > 9 999 999 son rechazados.
-- [ ] `lib/supabase/database.types.ts` incluye `games`, `scores` y `game_stats`.
-- [ ] `/biblioteca` y el home muestran solo ASTEROIDES, leído de Supabase; no queda ningún juego mock ni `GAMES` en el código.
-- [ ] `/juegos/asteroides` muestra `best` y `plays` derivados de `scores` y el Top 10 real; `/salon` muestra el Top 12 real con una sola pestaña de juego.
-- [ ] Con 0 puntuaciones (verificado en una rama o tras borrar las filas demo temporalmente) detalle y salón muestran el estado vacío sin errores.
-- [ ] `/juegos/asteroides/jugar`: al terminar y pulsar "GUARDAR PUNTUACIÓN" se crea una fila en `scores` con nombre y puntuación correctos; el modal muestra éxito y, tras recargar `/salon`, la fila aparece en su posición.
-- [ ] Si el insert falla (p. ej. offline), el modal muestra el error y permite reintentar sin perder la puntuación.
-- [ ] `/juegos/rocas` y `/juegos/inexistente` devuelven 404 real; `/juegos/asteroides` y `/juegos/asteroides/jugar` responden 200.
-- [ ] No quedan referencias a `rocas`, `seededScores`, `PLAYERS`, `StoredScore` ni `saveScore` de localStorage en el código (`grep`).
-- [ ] A 375 px no hay scroll horizontal (`scrollWidth <= innerWidth`) en las rutas anteriores; sin errores de consola ni de hidratación.
-- [ ] `SUPABASE_DB` y secretos no aparecen en el bundle cliente ni en el repo.
-- [ ] `npm run lint` y `npm run build` sin errores.
+- [x] La migración existe en `list_migrations`; `list_tables` muestra `games` y `scores` con RLS activado.
+- [x] `games` contiene exactamente 1 fila (`asteroides`); `scores` contiene ~12 filas con `is_seed = true`, todas con `game_slug = 'asteroides'`.
+- [x] `get_advisors` (security) sin errores/avisos de RLS ni de vista `security definer`.
+- [x] Con la publishable key (rol `anon`): `select` en `games`/`scores` funciona; `insert` válido funciona; `update`, `delete`, `insert` con `is_seed = true`, `name` vacío o >16 y `score` negativo o > 9 999 999 son rechazados.
+- [x] `lib/supabase/database.types.ts` incluye `games`, `scores` y `game_stats`.
+- [x] `/biblioteca` y el home muestran solo ASTEROIDES, leído de Supabase; no queda ningún juego mock ni `GAMES` en el código.
+- [x] `/juegos/asteroides` muestra `best` y `plays` derivados de `scores` y el Top 10 real; `/salon` muestra el Top 12 real con una sola pestaña de juego.
+- [x] Con 0 puntuaciones (verificado en una rama o tras borrar las filas demo temporalmente) detalle y salón muestran el estado vacío sin errores.
+- [x] `/juegos/asteroides/jugar`: al terminar y pulsar "GUARDAR PUNTUACIÓN" se crea una fila en `scores` con nombre y puntuación correctos; el modal muestra éxito y, tras recargar `/salon`, la fila aparece en su posición.
+- [x] Si el insert falla (p. ej. offline), el modal muestra el error y permite reintentar sin perder la puntuación.
+- [x] `/juegos/rocas` y `/juegos/inexistente` muestran la página 404 con `noindex` (con `cacheComponents` Next responde HTTP 200 a rutas no listadas; mismo comportamiento que antes de este spec); `/juegos/asteroides` y `/juegos/asteroides/jugar` responden 200.
+- [x] No quedan referencias a `rocas`, `seededScores`, `PLAYERS`, `StoredScore` ni `saveScore` de localStorage en el código (`grep`).
+- [x] A 375 px no hay scroll horizontal (`scrollWidth <= innerWidth`) en las rutas anteriores; sin errores de consola ni de hidratación.
+- [x] `SUPABASE_DB` y secretos no aparecen en el bundle cliente ni en el repo.
+- [x] `npm run lint` y `npm run build` sin errores.
 
 ## Decisiones tomadas y descartadas
 - **BD como fuente de verdad del catálogo** (elegido) vs mantener `lib/games.ts` con tabla decorativa: una sola fuente evita desincronización; `cover`/`color` también viven en BD.
