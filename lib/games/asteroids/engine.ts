@@ -11,24 +11,14 @@ import {
   W,
 } from "./constants";
 import { Asteroid, Bullet, Particle, PowerUp, Ship } from "./entities";
+import type { GameCallbacks, GameEngine } from "../types";
 import { createInput } from "./input";
 import { dist, rand } from "./utils";
 
-export interface AsteroidsCallbacks {
-  onScore(score: number): void;
-  onLives(lives: number): void;
-  onLevel(level: number): void;
-  onGameOver(finalScore: number): void;
-}
+/** Asteroides reporta vidas y nivel: callbacks obligatorios. */
+export type AsteroidsCallbacks = Required<GameCallbacks>;
 
-export interface AsteroidsGame {
-  pause(): void;
-  resume(): void;
-  restart(): void;
-  /** Termina la partida actual (botón FIN): dispara onGameOver y congela el juego. */
-  end(): void;
-  destroy(): void;
-}
+export type AsteroidsGame = GameEngine;
 
 type State = "playing" | "dead" | "gameover";
 
