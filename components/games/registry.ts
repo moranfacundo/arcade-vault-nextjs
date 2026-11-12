@@ -2,6 +2,7 @@
 
 import type { GameEntry } from "@/lib/games/types";
 import { AsteroidsCanvas } from "./asteroids-canvas";
+import { TetrisCanvas } from "./tetris-canvas";
 
 /**
  * Registro de juegos jugables: slug (fila de `games`) → lo que necesita `GamePlayer`.
@@ -17,5 +18,15 @@ export const GAME_REGISTRY: Record<string, GameEntry> = {
       { keys: ["ESPACIO"], label: "DISPARAR" },
     ],
     hud: { lives: 3, level: true },
+  },
+  tetris: {
+    Canvas: TetrisCanvas,
+    controls: [
+      { keys: ["←", "→"], label: "MOVER" },
+      { keys: ["↑", "X"], label: "ROTAR" },
+      { keys: ["↓"], label: "BAJAR" },
+      { keys: ["ESPACIO"], label: "CAÍDA" },
+    ],
+    hud: { level: true },
   },
 };
