@@ -4,13 +4,17 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { insertScore } from "@/lib/db/scores";
 import type { GameInfo } from "@/lib/games";
-import { AsteroidsCanvas, type AsteroidsCanvasHandle } from "./games/asteroids-canvas";
+import type { GameCanvasHandle } from "@/lib/games/types";
+import { GAME_REGISTRY } from "./games/registry";
 import { useSession } from "./session-provider";
 
 export function GamePlayer({ game }: { game: GameInfo }) {
   const { user } = useSession();
+  // Juego en `games` sin motor registrado: se muestra "PRÓXIMAMENTE" (sin canvas, HUD ni guardado).
+  const entry = GAME_REGISTRY[game.slug];
+  const initialLives = entry?.hud.lives ?? 0;
   const [score, setScore] = useState(0);
-  const [lives, setLives] = useState(3);
+  const [lives, setLives] = useState(initialLives);
   const [paused, setPaused] = useState(false);
   const [over, setOver] = useState(false);
   const [custom, setCustom] = useState<string | null>(null);
@@ -18,21 +22,21 @@ export function GamePlayer({ game }: { game: GameInfo }) {
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
   const [level, setLevel] = useState(1);
-  const asteroidsRef = useRef<AsteroidsCanvasHandle>(null);
+  const gameRef = useRef<GameCanvasHandle>(null);
 
   // El nombre sigue al usuario de sesión (disponible tras hidratar) salvo que se edite en el modal.
   const name = custom ?? user?.name ?? "INVITADO";
 
   const restart = () => {
     setScore(0);
-    setLives(3);
+    setLives(initialLives);
     setPaused(false);
     setOver(false);
     setSaved(false);
     setSaving(false);
     setSaveError(false);
     setLevel(1);
-    asteroidsRef.current?.restart();
+    gameRef.current?.restart();
   };
 
   const save = async () => {
@@ -48,7 +52,7 @@ export function GamePlayer({ game }: { game: GameInfo }) {
     }
   };
 
-  const finish = () => asteroidsRef.current?.end();
+  const finish = () => gameRef.current?.end();
 
   return (
     <div className="av-player fade-in">
@@ -62,20 +66,29 @@ export function GamePlayer({ game }: { game: GameInfo }) {
             <div className="l">Puntuación</div>
             <div className="v">{score.toLocaleString("es-ES")}</div>
           </div>
-          <div className="hud-stat lives">
-            <div className="l">Vidas</div>
-            <div className="v">{"♥ ".repeat(lives).trim() || "—"}</div>
-          </div>
-          <div className="hud-stat level">
-            <div className="l">Nivel</div>
-            <div className="v">{String(level).padStart(2, "0")}</div>
-          </div>
+          {entry?.hud.lives !== undefined && (
+            <div className="hud-stat lives">
+              <div className="l">Vidas</div>
+              <div className="v">{"♥ ".repeat(lives).trim() || "—"}</div>
+            </div>
+          )}
+          {entry?.hud.level && (
+            <div className="hud-stat level">
+              <div className="l">Nivel</div>
+              <div className="v">{String(level).padStart(2, "0")}</div>
+            </div>
+          )}
         </div>
         <div className="hud-actions">
-          <button type="button" className="btn yellow" onClick={() => setPaused((p) => !p)}>
+          <button
+            type="button"
+            className="btn yellow"
+            onClick={() => setPaused((p) => !p)}
+            disabled={!entry}
+          >
             {paused ? "REANUDAR" : "PAUSA"}
           </button>
-          <button type="button" className="btn magenta" onClick={finish}>
+          <button type="button" className="btn magenta" onClick={finish} disabled={!entry}>
             FIN
           </button>
           <Link href={`/juegos/${game.slug}`} className="btn ghost">
@@ -86,18 +99,29 @@ export function GamePlayer({ game }: { game: GameInfo }) {
 
       <div className="crt">
         <div className="crt-screen">
-          <AsteroidsCanvas
-            ref={asteroidsRef}
-            paused={paused}
-            onScore={setScore}
-            onLives={setLives}
-            onLevel={setLevel}
-            onGameOver={(finalScore) => {
-              setScore(finalScore);
-              setOver(true);
-            }}
-          />
-          {paused && (
+          {entry ? (
+            <entry.Canvas
+              ref={gameRef}
+              paused={paused}
+              onScore={setScore}
+              onLives={setLives}
+              onLevel={setLevel}
+              onGameOver={(finalScore) => {
+                setScore(finalScore);
+                setOver(true);
+              }}
+            />
+          ) : (
+            <div className="crt-content z-5">
+              <div>
+                <div className="pixel text-[22px] neon-yellow">PRÓXIMAMENTE</div>
+                <div className="mt-2.5 font-mono text-[11px] tracking-[0.16em] text-ink-dim">
+                  {game.title} AÚN NO ESTÁ DISPONIBLE
+                </div>
+              </div>
+            </div>
+          )}
+          {entry && paused && (
             <div className="crt-content z-5 bg-black/60">
               <div>
                 <div className="pixel text-[22px] neon-yellow">EN PAUSA</div>
@@ -113,10 +137,23 @@ export function GamePlayer({ game }: { game: GameInfo }) {
           <span>{game.title} · CRT-83 · 60 HZ</span>
           <span>CARGA · 1MB</span>
         </div>
-        <p className="game-hint">
-          <kbd>←</kbd> <kbd>→</kbd> GIRAR · <kbd>↑</kbd> IMPULSO · <kbd>ESPACIO</kbd> DISPARAR
-          <span className="need-kb">REQUIERE TECLADO</span>
-        </p>
+        {entry && (
+          <p className="game-hint">
+            {entry.controls.map((c, i) => (
+              <span key={c.label}>
+                {i > 0 && " · "}
+                {c.keys.map((k, j) => (
+                  <span key={k}>
+                    {j > 0 && " "}
+                    <kbd>{k}</kbd>
+                  </span>
+                ))}{" "}
+                {c.label}
+              </span>
+            ))}
+            <span className="need-kb">REQUIERE TECLADO</span>
+          </p>
+        )}
       </div>
 
       {over && (

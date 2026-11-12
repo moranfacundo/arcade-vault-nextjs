@@ -1,25 +1,16 @@
 "use client";
 
-import { useEffect, useImperativeHandle, useRef, type Ref } from "react";
-import { createAsteroids, type AsteroidsCallbacks, type AsteroidsGame } from "@/lib/games/asteroids/engine";
+import { useEffect, useImperativeHandle, useRef } from "react";
+import { createAsteroids, type AsteroidsGame } from "@/lib/games/asteroids/engine";
+import type { GameCallbacks, GameCanvasProps } from "@/lib/games/types";
 
-export interface AsteroidsCanvasHandle {
-  restart(): void;
-  end(): void;
-}
-
-interface Props extends AsteroidsCallbacks {
-  paused: boolean;
-  ref?: Ref<AsteroidsCanvasHandle>;
-}
-
-export function AsteroidsCanvas({ paused, ref, onScore, onLives, onLevel, onGameOver }: Props) {
+export function AsteroidsCanvas({ paused, ref, onScore, onLives, onLevel, onGameOver }: GameCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const gameRef = useRef<AsteroidsGame | null>(null);
   const pausedRef = useRef(paused);
 
   // Los callbacks viven en una ref para no recrear el motor cuando cambian.
-  const cbRef = useRef<AsteroidsCallbacks>({ onScore, onLives, onLevel, onGameOver });
+  const cbRef = useRef<GameCallbacks>({ onScore, onLives, onLevel, onGameOver });
   useEffect(() => {
     cbRef.current = { onScore, onLives, onLevel, onGameOver };
   });
@@ -35,8 +26,8 @@ export function AsteroidsCanvas({ paused, ref, onScore, onLives, onLevel, onGame
     if (!canvas) return;
     const game = createAsteroids(canvas, {
       onScore: (v) => cbRef.current.onScore(v),
-      onLives: (v) => cbRef.current.onLives(v),
-      onLevel: (v) => cbRef.current.onLevel(v),
+      onLives: (v) => cbRef.current.onLives?.(v),
+      onLevel: (v) => cbRef.current.onLevel?.(v),
       onGameOver: (v) => cbRef.current.onGameOver(v),
     });
     gameRef.current = game;
@@ -56,7 +47,7 @@ export function AsteroidsCanvas({ paused, ref, onScore, onLives, onLevel, onGame
   return (
     <canvas
       ref={canvasRef}
-      className="asteroids-canvas"
+      className="game-canvas"
       width={800}
       height={600}
       role="img"

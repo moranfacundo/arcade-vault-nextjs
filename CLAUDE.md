@@ -8,6 +8,13 @@ Arcade Vault: online game platform where players compete for highest score. Earl
 
 README says project follows Spec Driven Design (`/spec` and `/spec-impl` skills, installed via `npx skills@latest add Klerith/fernando-skills`).
 
+## Skills de proyecto
+
+- `/add-game <nombre|ruta>`: genera el spec (`specs/NN-<slug>-game.md`) para portar un juego de `references/started-games/` o crear uno nuevo, siguiendo SPEC 05/06. Solo spec; implementar con `/spec-impl`. Se apoya en el contrato genérico de juegos y el registro (SPEC 07, implementado).
+  - Archivos: `.agents/skills/add-game/{SKILL.md,template.md,platform-contract.md}` (symlink en `.claude/skills/`). El contrato de integración vive en `platform-contract.md`: si cambia el patrón de juegos (motor, registro, `games`), actualizarlo ahí.
+  - Se invoca manual o automáticamente al pedir agregar/crear/portar un juego. Un juego por spec; nunca modifica `references/`.
+  - Flujo: `/add-game <juego>` → spec `Borrador` → aprobar → `/spec-impl NN-<slug>-game`. Detalle de uso en `README.md`.
+
 ## Commands
 
 - `npm run dev` — dev server (localhost:3000)
@@ -42,5 +49,6 @@ README says project follows Spec Driven Design (`/spec` and `/spec-impl` skills,
 - RLS: `games` y `scores` con `select` público; `insert` en `scores` para `anon`/`authenticated` solo con `is_seed = false`; sin update/delete (además los `GRANT` de `anon`/`authenticated` están recortados a `select`/`insert`: Supabase concede ALL por defecto en tablas nuevas, así que tras crear tablas hay que hacer `revoke all` y re-otorgar lo mínimo). `CHECK`: `name` 1-16 chars, `score` 0..9 999 999. Ranking = Top N de todas las partidas.
 - Capa de datos `lib/db/`: `client.ts` (`createPublicClient`, supabase-js sin cookies, para lecturas y `generateStaticParams`), `games.ts` (`listGames`, `getGame`, `listGameSlugs`), `scores.ts` (`getTopScores`, `insertScore` desde el navegador). El catálogo vive en BD; `lib/games.ts` solo tiene tipos, `CATS` y `formatPlays`.
 - Lecturas a BD en páginas: siempre dentro de `<Suspense>` (con `DataFallback`) por `cacheComponents`; si cambias el esquema, regenera tipos.
-- Añadir un juego = fila en `games` (slug, cover `cover-<slug>` en `globals.css`) + motor/canvas propio; hoy `GamePlayer` solo monta `AsteroidsCanvas`.
+- Añadir un juego = fila en `games` (slug, cover `cover-<slug>` en `globals.css`) + motor TS en `lib/games/<slug>/` + canvas `components/games/<slug>-canvas.tsx` + entrada en `GAME_REGISTRY` (`components/games/registry.ts`). `GamePlayer` no se toca: monta `entry.Canvas` y toma controles y stats de HUD (vidas/nivel) del registro. Slug sin entrada → "PRÓXIMAMENTE".
+- Contrato de juegos (SPEC 07) en `lib/games/types.ts`: `GameCallbacks` (`onScore`/`onGameOver` obligatorios; `onLives`/`onLevel` opcionales), `GameEngine`, `GameCanvasProps`/`GameCanvasHandle`, `GameEntry`. Canvas fijo 800×600 (4:3), clase `.game-canvas`.
 - Antes de cambiar el esquema, inspeccionar con MCP `list_tables`; usar `apply_migration` para DDL y `get_advisors` para revisar seguridad/RLS.
