@@ -1,6 +1,6 @@
 # SPEC 07 — Contrato genérico de juegos y registro en `GamePlayer`
 
-**Estado:** Aprobado
+**Estado:** Implementado
 **Depende de:** SPEC 05 (motor y canvas de Asteroides), SPEC 06 (catálogo `games` en Supabase, `insertScore`)
 **Fecha:** 2026-11-12
 **Objetivo:** Desacoplar `GamePlayer` de Asteroides mediante un contrato común de motor/canvas y un registro `slug → juego`, de modo que agregar un juego nuevo (skill `/add-game`) no requiera tocar la lógica de `GamePlayer`.
@@ -52,17 +52,17 @@ Sin esquema persistente nuevo. Estructuras:
 7. Verificación con Playwright MCP a 1280 y 375 sobre `/juegos/asteroides/jugar`: jugar, pausa, FIN, guardar, jugar de nuevo, 3 entradas/salidas; consola y scroll horizontal. Probar el fallback quitando temporalmente la entrada del registro. `npm run lint` y `npm run build`.
 
 ## Criterios de aceptación
-- [ ] `/juegos/asteroides/jugar` se comporta igual que antes del refactor: controles, puntos, vidas, nivel, PAUSA, FIN, modal, guardado en `scores` y "JUGAR DE NUEVO".
-- [ ] `components/game-player.tsx` no importa nada de `asteroids` ni compara `slug` con literales (`grep`).
-- [ ] Vidas y nivel del HUD, y el texto de controles, provienen de `GAME_REGISTRY["asteroides"]`.
-- [ ] Con un registro simulado sin `hud.lives`/`hud.level`, el HUD oculta esos stats (verificado temporalmente).
-- [ ] Slug sin entrada en el registro muestra "PRÓXIMAMENTE" sin errores de consola ni de hidratación; no ofrece guardar puntuación.
-- [ ] `AsteroidsCanvas` y el motor usan los tipos de `lib/games/types.ts`.
-- [ ] No quedan referencias a `.asteroids-canvas` en código ni CSS (`grep`).
-- [ ] 3 entradas/salidas sin loops ni listeners duplicados; StrictMode sin doble disparo (criterios de SPEC 05 se mantienen).
-- [ ] A 375 px sin scroll horizontal (`scrollWidth <= innerWidth`) y aviso "REQUIERE TECLADO" visible.
-- [ ] `platform-contract.md` y `CLAUDE.md` mencionan el registro y el contrato.
-- [ ] `npm run lint` y `npm run build` sin errores.
+- [x] `/juegos/asteroides/jugar` se comporta igual que antes del refactor: controles, puntos, vidas, nivel, PAUSA, FIN, modal, guardado en `scores` y "JUGAR DE NUEVO".
+- [x] `components/game-player.tsx` no importa nada de `asteroids` ni compara `slug` con literales (`grep`).
+- [x] Vidas y nivel del HUD, y el texto de controles, provienen de `GAME_REGISTRY["asteroides"]`.
+- [x] Con un registro simulado sin `hud.lives`/`hud.level`, el HUD oculta esos stats (verificado temporalmente).
+- [x] Slug sin entrada en el registro muestra "PRÓXIMAMENTE" sin errores de consola ni de hidratación; no ofrece guardar puntuación.
+- [x] `AsteroidsCanvas` y el motor usan los tipos de `lib/games/types.ts`.
+- [x] No quedan referencias a `.asteroids-canvas` en código ni CSS (`grep`).
+- [x] 3 entradas/salidas sin loops ni listeners duplicados; StrictMode sin doble disparo (criterios de SPEC 05 se mantienen).
+- [x] A 375 px sin scroll horizontal (`scrollWidth <= innerWidth`) y aviso "REQUIERE TECLADO" visible.
+- [x] `platform-contract.md` y `CLAUDE.md` mencionan el registro y el contrato.
+- [x] `npm run lint` y `npm run build` sin errores.
 
 ## Decisiones tomadas y descartadas
 - **Registro en código `slug → entrada`** (elegido) vs columnas de config en `games` (controles, vidas): los controles y el componente son código; meterlos en BD obligaría a migración por cada ajuste y no puede guardar componentes.

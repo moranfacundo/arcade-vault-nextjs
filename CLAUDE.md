@@ -10,7 +10,7 @@ README says project follows Spec Driven Design (`/spec` and `/spec-impl` skills,
 
 ## Skills de proyecto
 
-- `/add-game <nombre|ruta>`: genera el spec (`specs/NN-<slug>-game.md`) para portar un juego de `references/started-games/` o crear uno nuevo, siguiendo SPEC 05/06. Solo spec; implementar con `/spec-impl`. Requiere el refactor genérico de `GamePlayer` (SPEC 07).
+- `/add-game <nombre|ruta>`: genera el spec (`specs/NN-<slug>-game.md`) para portar un juego de `references/started-games/` o crear uno nuevo, siguiendo SPEC 05/06. Solo spec; implementar con `/spec-impl`. Se apoya en el contrato genérico de juegos y el registro (SPEC 07, implementado).
   - Archivos: `.agents/skills/add-game/{SKILL.md,template.md,platform-contract.md}` (symlink en `.claude/skills/`). El contrato de integración vive en `platform-contract.md`: si cambia el patrón de juegos (motor, registro, `games`), actualizarlo ahí.
   - Se invoca manual o automáticamente al pedir agregar/crear/portar un juego. Un juego por spec; nunca modifica `references/`.
   - Flujo: `/add-game <juego>` → spec `Borrador` → aprobar → `/spec-impl NN-<slug>-game`. Detalle de uso en `README.md`.

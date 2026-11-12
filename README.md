@@ -44,9 +44,15 @@ Flujo completo:
 2. Revisar el spec y cambiar su estado a `Aprobado`.
 3. `/spec-impl NN-<slug>-game` para implementarlo.
 
-### Prerrequisito pendiente
+### Contrato de juegos (SPEC 07, implementado)
 
-`GamePlayer` sigue acoplado a `AsteroidsCanvas` (hint de controles y vidas fijos). Hace falta un spec previo (SPEC 07, contrato genérico de juegos y registro slug → canvas). Si no existe o no está `Implementado`, la skill avisa y declara la dependencia en el spec generado.
+`GamePlayer` ya no depende de un juego concreto. Cada juego se integra con:
+
+- Contrato en `lib/games/types.ts` (`GameCallbacks`, `GameEngine`, `GameCanvasProps`/`GameCanvasHandle`, `GameEntry`).
+- Una entrada en `GAME_REGISTRY` (`components/games/registry.ts`): `slug → { Canvas, controls, hud }`. `GamePlayer` toma de ahí el canvas, el hint de controles y los stats de HUD (vidas/nivel).
+- Un slug en `games` sin entrada en el registro muestra "PRÓXIMAMENTE".
+
+La skill genera specs que ya asumen este contrato (`Depende de: SPEC 05, 06, 07`).
 
 ## Commands
 
