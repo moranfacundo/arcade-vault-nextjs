@@ -1,6 +1,6 @@
 # SPEC 08 — Juego: TETRIS (tetris)
 
-**Estado:** Aprobado
+**Estado:** Implementado
 **Depende de:** SPEC 05, SPEC 06, SPEC 07 (contrato genérico de juegos, `Implementado`)
 **Fecha:** 2026-11-12
 **Objetivo:** Portar Tetris (`references/started-games/03-tetris/`) como motor TS y registrarlo en el catálogo de Arcade Vault.
@@ -61,21 +61,21 @@
 9. Actualizar `CLAUDE.md` si cambia el patrón (p. ej. "solo `asteroides`" en la sección Supabase).
 
 ## Criterios de aceptación
-- [ ] `/juegos/tetris` y `/juegos/tetris/jugar` responden 200; el juego aparece en `/` y `/biblioteca` leído de Supabase.
-- [ ] `←`/`→` mueven, `↑`/`X` rotan con wall kick, `↓` baja (+1/fila), `Espacio` cae al instante (+2/celda); las teclas no hacen scroll de la página.
-- [ ] Completar líneas suma `[100,300,500,800] × nivel`; el contador LÍNEAS del canvas y el HUD de nivel suben cada 10 líneas y la caída se acelera.
-- [ ] El HUD muestra puntuación y nivel, sin vidas; controles mostrados coinciden con el registro.
-- [ ] NEXT muestra la siguiente pieza (incluida la tuerca N); la pieza fantasma se ve.
-- [ ] Spawn bloqueado abre el modal "FIN DEL JUEGO" con la puntuación correcta; `FIN` abre el modal con la actual.
-- [ ] PAUSA congela juego e input; REANUDAR continúa sin saltos ni caída instantánea por `dt` acumulado.
-- [ ] "GUARDAR PUNTUACIÓN" inserta fila en `scores` (`game_slug = 'tetris'`); aparece en detalle/salón tras recargar; estado vacío "SÉ EL PRIMERO" sin errores.
-- [ ] "JUGAR DE NUEVO" reinicia tablero, HUD y motor.
-- [ ] 3 entradas/salidas sin loops ni listeners duplicados; StrictMode sin doble disparo (una pulsación = un movimiento).
-- [ ] A 375 px sin scroll horizontal (`scrollWidth <= innerWidth`), canvas sin deformar y aviso "REQUIERE TECLADO".
-- [ ] Sin errores de consola ni de hidratación.
-- [ ] Fila `tetris` verificada en `games` con `execute_sql`; filas de prueba en `scores` borradas.
-- [ ] `references/started-games/*` sin cambios.
-- [ ] `npm run lint` y `npm run build` sin errores.
+- [x] `/juegos/tetris` y `/juegos/tetris/jugar` responden 200; el juego aparece en `/` y `/biblioteca` leído de Supabase.
+- [x] `←`/`→` mueven, `↑`/`X` rotan con wall kick, `↓` baja (+1/fila), `Espacio` cae al instante (+2/celda); las teclas no hacen scroll de la página.
+- [x] Completar líneas suma `[100,300,500,800] × nivel`; el contador LÍNEAS del canvas y el HUD de nivel suben cada 10 líneas y la caída se acelera.
+- [x] El HUD muestra puntuación y nivel, sin vidas; controles mostrados coinciden con el registro.
+- [x] NEXT muestra la siguiente pieza (incluida la tuerca N); la pieza fantasma se ve.
+- [x] Spawn bloqueado abre el modal "FIN DEL JUEGO" con la puntuación correcta; `FIN` abre el modal con la actual.
+- [x] PAUSA congela juego e input; REANUDAR continúa sin saltos ni caída instantánea por `dt` acumulado.
+- [x] "GUARDAR PUNTUACIÓN" inserta fila en `scores` (`game_slug = 'tetris'`); aparece en detalle/salón tras recargar; estado vacío "SÉ EL PRIMERO" sin errores.
+- [x] "JUGAR DE NUEVO" reinicia tablero, HUD y motor.
+- [x] 3 entradas/salidas sin loops ni listeners duplicados; StrictMode sin doble disparo (una pulsación = un movimiento).
+- [x] A 375 px sin scroll horizontal (`scrollWidth <= innerWidth`), canvas sin deformar y aviso "REQUIERE TECLADO".
+- [x] Sin errores de consola ni de hidratación.
+- [x] Fila `tetris` verificada en `games` con `execute_sql`; filas de prueba en `scores` borradas.
+- [x] `references/started-games/*` sin cambios.
+- [x] `npm run lint` y `npm run build` sin errores.
 
 ## Decisiones tomadas y descartadas
 - **Canvas 800×600 con tablero 300×600 dentro y panel lateral dibujado** (elegido) vs canvas 300×600 propio: respeta el contrato 4:3 de SPEC 07 sin ampliarlo. Costo: ~50 % del canvas es panel/espacio vacío; el tablero escala menos en móvil.
