@@ -4,8 +4,9 @@ Checklist que todo spec de juego debe cubrir. `<slug>` = slug del juego, `<Name>
 
 ## Motor (`lib/games/<slug>/`)
 - Archivos: `constants.ts`, `entities.ts`, `input.ts`, `engine.ts` (+ `utils.ts` si hace falta).
-- API: `create<Name>(canvas, callbacks)` → `{ pause(), resume(), restart(), end(), destroy() }`.
-- Callbacks: `onScore(n)`, `onGameOver(finalScore)`, más `onLives(n)` / `onLevel(n)` u otros solo si el juego los tiene.
+- Contrato en `lib/games/types.ts` (SPEC 07): `GameEngine`, `GameCallbacks`, `GameCanvasProps`, `GameCanvasHandle`, `GameEntry`, `ControlHint`.
+- API: `create<Name>(canvas, callbacks)` → `GameEngine` = `{ pause(), resume(), restart(), end(), destroy() }`.
+- Callbacks (`GameCallbacks`): `onScore(n)` y `onGameOver(finalScore)` obligatorios; `onLives(n)` / `onLevel(n)` opcionales, solo si el juego los tiene (el motor puede tipar `Required<GameCallbacks>` como Asteroides).
 - Sin globales de DOM: `document`/`window` solo dentro de `create<Name>`/`destroy`. Estado encapsulado por instancia (input incluido).
 - Si es port: conservar valores de constantes del original y listar comportamientos a preservar.
 - Eliminar HUD, overlay de game over, pausa y reinicio propios del original.
@@ -19,12 +20,13 @@ Checklist que todo spec de juego debe cubrir. `<slug>` = slug del juego, `<Name>
 - `destroy()` cancela el rAF y quita todos los listeners.
 
 ## Componente (`components/games/<slug>-canvas.tsx`)
-- Client Component; patrón de `components/games/asteroids-canvas.tsx`: callbacks en ref, un motor por montaje, `destroy()` en cleanup, seguro con StrictMode, `useImperativeHandle` con `restart`/`end`, prop `paused`.
-- `<canvas>` con tamaño lógico fijo, escalado por CSS manteniendo proporción, `role="img"` + `aria-label` en español.
+- Client Component que recibe `GameCanvasProps`; patrón de `components/games/asteroids-canvas.tsx`: callbacks en ref (opcionales con `?.`), un motor por montaje, `destroy()` en cleanup, seguro con StrictMode, `useImperativeHandle` con `restart`/`end` (`GameCanvasHandle`), prop `paused`.
+- `<canvas className="game-canvas">` (clase genérica en `globals.css`) con tamaño lógico fijo 800×600 (4:3), escalado por CSS, `role="img"` + `aria-label` en español.
 
 ## Plataforma (`components/game-player.tsx`)
 - La plataforma manda la UI: HUD, PAUSA/REANUDAR, FIN, modal "FIN DEL JUEGO", guardado (`insertScore` de `lib/db/scores.ts`) y "JUGAR DE NUEVO".
-- Registro del juego en el mecanismo de SPEC 07 (slug → canvas, hint de controles, stats de HUD). No hacer ramas `if (slug === ...)` ad hoc.
+- Registro: añadir una entrada en `GAME_REGISTRY` (`components/games/registry.ts`, clave = slug de `games`) con `Canvas`, `controls` (`{ keys, label }[]`) y `hud` (`lives` = vidas iniciales, ausente si no hay vidas; `level` = mostrar nivel). **No tocar `GamePlayer`** ni hacer ramas `if (slug === ...)`.
+- Un slug en `games` sin entrada en el registro muestra "PRÓXIMAMENTE": registro y fila de BD deben crearse juntos.
 - Aviso de controles bajo el CRT y "REQUIERE TECLADO" en pantallas táctiles/estrechas.
 
 ## Datos (Supabase)
@@ -34,11 +36,12 @@ Checklist que todo spec de juego debe cubrir. `<slug>` = slug del juego, `<Name>
 - Límites de `scores` (CHECK): `name` 1–16, `score` 0..9 999 999. Verificar que la puntuación máxima plausible del juego cabe.
 
 ## CSS y assets
-- `.cover-<slug>` en `app/globals.css` (sin `@layer`; para sobreescribir CSS legado usar `!`); estilos mínimos del canvas dentro de `.crt-screen`.
+- `.cover-<slug>` en `app/globals.css` (sin `@layer`; para sobreescribir CSS legado usar `!`). El canvas reutiliza `.game-canvas` y el hint `.game-hint`; no crear clases por juego salvo necesidad real.
 - Assets estáticos en `public/games/<slug>/`.
 
 ## Verificación (criterios de aceptación mínimos)
 - Playwright MCP a 1280 y 375 en `/`, `/biblioteca`, `/juegos/<slug>`, `/juegos/<slug>/jugar`: jugar, pausa/reanudar, FIN, perder/terminar, guardar puntuación, ver fila en el ranking tras recargar, jugar de nuevo.
+- Controles y HUD (vidas/nivel) mostrados coinciden con la entrada del registro.
 - Sin errores de consola/hidratación; `document.documentElement.scrollWidth <= innerWidth`.
 - 3 entradas/salidas sin loops ni listeners duplicados; StrictMode sin doble disparo.
 - Fila insertada en `games` verificada con `execute_sql`; filas de prueba en `scores` borradas.
